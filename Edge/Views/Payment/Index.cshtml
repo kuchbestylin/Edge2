@@ -1,0 +1,435 @@
+﻿@model Edge.Models.PaymentModel
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Payment Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --danger-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --card-border-radius: 12px;
+            --input-border-radius: 8px;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .page-container {
+            max-width: 1140px;
+            margin: 2rem auto;
+            padding: 0 15px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            border-radius: var(--card-border-radius);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem 1.25rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: var(--input-border-radius);
+            padding: 0.6rem 1rem;
+            border: 1px solid #dee2e6;
+            font-size: 1rem;
+        }
+
+            .form-control:focus, .form-select:focus {
+                box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+                border-color: var(--primary-color);
+            }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+                background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            }
+
+        .input-group-text {
+            background-color: var(--light-color);
+            border-radius: var(--input-border-radius) 0 0 var(--input-border-radius);
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: #4cc9f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-icon {
+            font-size: 5rem;
+            color: var(--danger-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-methods {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+            .payment-methods img {
+                height: 30px;
+                filter: grayscale(0.5);
+                transition: filter 0.3s ease;
+            }
+
+                .payment-methods img:hover {
+                    filter: grayscale(0);
+                }
+
+        .form-check-input[type="radio"] {
+            border-color: var(--primary-color);
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .payment-option {
+            padding: 1rem;
+            border-radius: var(--card-border-radius);
+            border: 1px solid #dee2e6;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            .payment-option:hover {
+                border-color: var(--primary-color);
+                background-color: rgba(67, 97, 238, 0.05);
+            }
+
+            .payment-option.selected {
+                border-color: var(--primary-color);
+                background-color: rgba(67, 97, 238, 0.1);
+            }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-header">
+            <i class="fas fa-credit-card me-2"></i>
+            Secure Payment
+        </h1>
+
+        <!-- Payment Form -->
+        <form id="paymentForm">
+            <!-- Order Information -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    Order Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="merchantOrderId" class="form-label">Order Reference (Optional)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                                <input type="text" id="merchantOrderId" name="merchantOrderId" class="form-control" placeholder="Leave blank for auto-generated ID">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user me-2"></i>
+                    Customer Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">First Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" id="firstName" name="firstName" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Last Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" id="lastName" name="lastName" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                                <select id="country" name="country" class="form-select">
+                                    <option value="ZAF" selected>South Africa</option>
+                                    <option value="USA">United States</option>
+                                    <option value="GBR">United Kingdom</option>
+                                    <option value="AUS">Australia</option>
+                                    <option value="CAN">Canada</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-money-bill-wave me-2"></i>
+                    Payment Details
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">R</span>
+                                <input type="number" id="amount" name="amount" class="form-control" required min="1" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-coins"></i></span>
+                                <select id="currency" name="currency" class="form-select">
+                                    <option value="ZAR" selected>South African Rand (ZAR)</option>
+                                    <option value="USD">US Dollar (USD)</option>
+                                    <option value="EUR">Euro (EUR)</option>
+                                    <option value="GBP">British Pound (GBP)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Credit Card Information -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-credit-card me-2"></i>
+                    Credit Card Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="cardNumber" class="form-label">Card Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                                <input type="text" id="cardNumber" name="cardNumber" class="form-control" placeholder="XXXX XXXX XXXX XXXX" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="expiryMonth" class="form-label">Expiry Month</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                <select id="expiryMonth" name="expiryMonth" class="form-select" required>
+                                    <option value="1">01</option>
+                                    <option value="2">02</option>
+                                    <option value="3">03</option>
+                                    <option value="4">04</option>
+                                    <option value="5">05</option>
+                                    <option value="6">06</option>
+                                    <option value="7">07</option>
+                                    <option value="8">08</option>
+                                    <option value="9">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="expiryYear" class="form-label">Expiry Year</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                <select id="expiryYear" name="expiryYear" class="form-select" required>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                    <option value="2028">2028</option>
+                                    <option value="2029">2029</option>
+                                    <option value="2030">2030</option>
+                                    <option value="2031">2031</option>
+                                    <option value="2032">2032</option>
+                                    <option value="2033">2033</option>
+                                    <option value="2034">2034</option>
+                                    <option value="2035">2035</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="text" id="cvv" name="cvv" class="form-control" placeholder="123" required pattern="[0-9]{3,4}">
+                            </div>
+                            <div class="form-text text-muted">
+                                <small><i class="fas fa-info-circle"></i> 3 or 4 digits on the back of your card</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-methods mt-3">
+                        <img src="/api/placeholder/60/40" alt="Visa">
+                        <img src="/api/placeholder/60/40" alt="Mastercard">
+                        <img src="/api/placeholder/60/40" alt="American Express">
+                        <img src="/api/placeholder/60/40" alt="PayPal">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Options -->
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-cog me-2"></i>
+                    Additional Options
+                </div>
+                <div class="card-body">
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="saveCard" name="saveCard" checked>
+                        <label class="form-check-label" for="saveCard">
+                            <i class="fas fa-save me-1"></i> Save card for future transactions
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-lock me-2"></i> Process Payment Securely
+                </button>
+            </div>
+        </form>
+
+        <!-- Success Message (Hidden by default, shown with JavaScript) -->
+        <div id="successMessage" class="card mt-4" style="display: none;">
+            <div class="card-header bg-success text-white">
+                <h2 class="text-center mb-0">Payment Successful</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h5 class="card-title">Thank you for your payment</h5>
+                <p class="card-text">Your transaction has been completed successfully.</p>
+                <p><strong>Reference:</strong> <span id="paymentReference">TX123456789</span></p>
+                <p><strong>Status:</strong> <span id="paymentStatus">Approved</span></p>
+
+                <div class="mt-4">
+                    <a href="/" class="btn btn-primary">Return to Home</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Failure Message (Hidden by default, shown with JavaScript) -->
+        <div id="failureMessage" class="card mt-4" style="display: none;">
+            <div class="card-header bg-danger text-white">
+                <h2 class="text-center mb-0">Payment Failed</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="error-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h5 class="card-title">Your payment could not be processed</h5>
+                <p class="card-text" id="errorMessage">There was an issue processing your payment.</p>
+
+                <div class="mt-4">
+                    <button id="tryAgainBtn" class="btn btn-primary">Try Again</button>
+                    <a href="/" class="btn btn-outline-secondary ms-2">Return to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Format card number with spaces for better readability
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            var target = e.target;
+            target.value = target.value.replace(/[^\d]/g, '').replace(/(.{4})/g, '$1 ').trim();
+        });
+
+        // Remove spaces from card number before submission
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // For demo purposes
+            var cardInput = document.getElementById('cardNumber');
+            cardInput.value = cardInput.value.replace(/\s/g, '');
+
+            // Show success message (for demo only - in production, this would happen after server response)
+            // Uncomment one of these to test different outcomes
+            document.getElementById('successMessage').style.display = 'block';
+            // document.getElementById('failureMessage').style.display = 'block';
+
+            document.getElementById('paymentForm').style.display = 'none';
+        });
+
+        // Try Again button functionality
+        document.getElementById('tryAgainBtn').addEventListener('click', function() {
+            document.getElementById('failureMessage').style.display = 'none';
+            document.getElementById('paymentForm').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

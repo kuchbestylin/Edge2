@@ -1,0 +1,21 @@
+﻿@{
+    bool isSuccess = ViewBag.Success != null && ViewBag.Success;
+}
+
+<div class="transaction-result mt-4">
+    <div class="alert @(isSuccess ? "alert-success" : "alert-danger")">
+        <h4 class="alert-heading">@(isSuccess ? "Payment Successful" : "Payment Failed")</h4>
+        <p>@ViewBag.Response</p>
+
+        @if (isSuccess)
+        {
+            <hr>
+            <p class="mb-0">Thank you for your payment. Your transaction has been processed successfully.</p>
+        }
+        else
+        {
+            <hr>
+            <p class="mb-0">Please check your payment details and try again or contact customer support for assistance.</p>
+        }
+    </div>
+</div>

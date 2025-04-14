@@ -1,0 +1,35 @@
+﻿@using Paygate.Models.Response
+@model TransactionResponse
+
+@{
+    ViewData["Title"] = "Payment Failed";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="text-center">Payment Failed</h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-times-circle text-danger" style="font-size: 5rem;"></i>
+                    </div>
+                    <h5 class="card-title">Your payment could not be processed</h5>
+                    <p class="card-text">@Model.ResultCode</p>
+
+                    @if (!string.IsNullOrEmpty(@Model.TransactionId.ToString()))
+                    {
+                        <p><strong>Reference:</strong> @Model.TransactionId</p>
+                    }
+
+                    <div class="text-center mt-4">
+                        <a href="/Payment/Checkout" class="btn btn-primary">Try Again</a>
+                        <a href="/" class="btn btn-outline-secondary ml-2">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

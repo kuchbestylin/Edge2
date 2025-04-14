@@ -1,0 +1,29 @@
+﻿@using Paygate.Models.Response
+@model TransactionResponse
+@{
+    ViewData["Title"] = "Payment Successful";
+}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="text-center">Payment Successful</h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-check-circle text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h5 class="card-title text-center">Thank you for your payment</h5>
+                    <p class="card-text text-center">Your transaction has been completed successfully.</p>
+                    <p class="card-text text-center"><strong>Reference:</strong> @Model. TransactionId</p>
+                    <p class="card-text text-center"><strong>Status:</strong> @Model.ResultCode </p>
+
+                    <div class="text-center mt-4">
+                        <a href="/" class="btn btn-primary">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
